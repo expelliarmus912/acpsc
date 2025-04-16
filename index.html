@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ACPSC - 주식 평균단가 계산기</title>
+
+  <!-- SEO 메타 태그 -->
+  <meta name="description" content="ACPSC - 주식 평균단가 계산기. 물타기 계산까지 쉽게! 평단가를 쉽고 빠르게 계산하세요.">
+  <meta name="keywords" content="평단 계산기, 평균단가 계산, 물타기 계산기, 주식 계산기, ACPSC, stock average cost calculator, average cost per share">
+  <meta name="author" content="ACPSC">
+  <meta name="robots" content="index, follow">
+  <meta name="naver-site-verification" content="63b511ad92e1f66722d57fb81044567cb9e553c2" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ACPSC - 주식 평균단가 계산기">
+  <meta property="og:description" content="간단하고 감성적인 계산기로 평단과 물타기를 쉽게 계산하세요.">
+  <meta property="og:url" content="https://acpsc.netlify.app">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://acpsc.netlify.app/icon-192.png">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1c1c1e"/>
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;
+      background-color: #1c1c1e;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: #2c2c2e;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #f2f2f7;
+      margin-bottom: 10px;
+    }
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    input[type="number"] {
+      width: 100%;
+      max-width: 400px;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: none;
+      background: #3a3a3c;
+      color: #ffffff;
+      font-size: 16px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .currency-selector {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .currency-selector label {
+      color: #f2f2f7;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      background: #ff9500;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 12px rgba(255,149,0,0.4);
+      max-width: 400px;
+      display: block;
+      margin: 0 auto;
+    }
+    button:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 6px rgba(255,149,0,0.6);
+    }
+    .result {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 14px;
+      border-radius: 12px;
+      background: #3a3a3c;
+      color: #ffcc00;
+      border: 1px solid #5a5a5e;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .result.show {
+      opacity: 1;
+    }
+    .ad-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>주식 평균단가 계산기</h1>
+    <div class="currency-selector">
+      <label><input type="radio" name="currency" value="KRW" checked> 원화 (₩)</label>
+      <label><input type="radio" name="currency" value="USD"> 달러 ($)</label>
+    </div>
+    <div class="section">
+      <h2>기존 보유 주식</h2>
+      <input type="number" id="currentPrice" placeholder="평단가">
+      <input type="number" id="currentQty" placeholder="수량">
+    </div>
+    <div class="section">
+      <h2>추가 매수</h2>
+      <input type="number" id="newPrice" placeholder="매수가">
+      <input type="number" id="newQty" placeholder="수량">
+    </div>
+    <button onclick="calculateAverage()">평단가 계산</button>
+    <div id="result" class="result"></div>
+
+    <div class="ad-container">
+      <ins class="kakao_ad_area"
+        style="display:inline-block;"
+        data-ad-unit="DAN-Q6XheX9EYcjWqBBK"
+        data-ad-width="320"
+        data-ad-height="100"></ins>
+    </div>
+    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+
+    function calculateAverage() {
+      const currentPrice = parseFloat(document.getElementById("currentPrice").value);
+      const currentQty = parseFloat(document.getElementById("currentQty").value);
+      const newPrice = parseFloat(document.getElementById("newPrice").value);
+      const newQty = parseFloat(document.getElementById("newQty").value);
+      const currency = document.querySelector('input[name="currency"]:checked').value;
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.classList.remove("show");
+
+      if (isNaN(currentPrice) || isNaN(currentQty) || isNaN(newPrice) || isNaN(newQty)) {
+        resultDiv.innerText = "모든 값을 입력해주세요.";
+        resultDiv.classList.add("show");
+        return;
+      }
+
+      const totalCost = (currentPrice * currentQty) + (newPrice * newQty);
+      const totalQty = currentQty + newQty;
+      const averagePrice = totalCost / totalQty;
+
+      const symbol = currency === "KRW" ? "₩" : "$";
+      resultDiv.innerText = `새로운 평균단가는 ${symbol}${averagePrice.toFixed(2)} 입니다.`;
+      resultDiv.classList.add("show");
+    }
+  </script>
+</body>
+</html>
