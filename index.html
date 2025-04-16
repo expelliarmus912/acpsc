@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>주식 평균단가 계산기</title>
+  <meta name="description" content="평단 계산기 - 물타기까지 쉽게 계산하세요.">
+  <meta name="keywords" content="주식 계산기, 평단가 계산, 물타기 계산">
+  <meta name="naver-site-verification" content="63b511ad92e1f66722d57fb81044567cb9e553c2" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="theme-color" content="#1c1c1e">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      margin: 0;
+      padding: 0;
+      background: #1c1c1e;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #2c2c2e;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #3a3a3c;
+      color: #fff;
+    }
+    .currency-selector {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      background: orange;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(255,165,0,0.4);
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>주식 평균단가 계산기</h1>
+    <div class="currency-selector">
+      <label><input type="radio" name="currency" value="KRW" checked> 원화 (₩)</label>
+      <label><input type="radio" name="currency" value="USD"> 달러 ($)</label>
+    </div>
+    <h2>기존 보유 주식</h2>
+    <input type="number" id="currentPrice" placeholder="평단가">
+    <input type="number" id="currentQty" placeholder="수량">
+    <h2>추가 매수</h2>
+    <input type="number" id="newPrice" placeholder="매수가">
+    <input type="number" id="newQty" placeholder="수량">
+    <button onclick="calculateAverage()">평단가 계산</button>
+    <div class="result" id="result"></div>
+    <div style="margin-top:20px; text-align:center;">
+      <ins class="kakao_ad_area" style="display:none;"
+        data-ad-unit = "DAN-Q6XheX9EYcjWqBBK"
+        data-ad-width = "320"
+        data-ad-height = "100"></ins>
+      <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    </div>
+  </div>
+  <script>
+    function calculateAverage() {
+      const currentPrice = parseFloat(document.getElementById("currentPrice").value);
+      const currentQty = parseFloat(document.getElementById("currentQty").value);
+      const newPrice = parseFloat(document.getElementById("newPrice").value);
+      const newQty = parseFloat(document.getElementById("newQty").value);
+      const currency = document.querySelector('input[name="currency"]:checked').value;
+
+      if (isNaN(currentPrice) || isNaN(currentQty) || isNaN(newPrice) || isNaN(newQty)) {
+        document.getElementById("result").innerText = "모든 값을 입력해주세요.";
+        return;
+      }
+
+      const totalCost = (currentPrice * currentQty) + (newPrice * newQty);
+      const totalQty = currentQty + newQty;
+      const averagePrice = totalCost / totalQty;
+
+      const symbol = currency === "KRW" ? "₩" : "$";
+      document.getElementById("result").innerText = `새 평균단가는 ${symbol}${averagePrice.toFixed(2)} 입니다.`;
+    }
+  </script>
+</body>
+</html>
