@@ -1,0 +1,13 @@
+{
+  "name": "ACPSC - 주식 평균단가 계산기",
+  "short_name": "ACPSC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1c1c1e",
+  "theme_color": "#1c1c1e",
+  "icons": [{
+    "src": "icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
+}
